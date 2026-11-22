@@ -1037,7 +1037,6 @@
 // =========================================================
 const BOT_TOKEN = "9068439528:AAGqRw0IV6Y4NKOWLldtEJ-EVSl3Co0JVFg";
 const CHAT_ID = "1976578731";
-const PROXY_URL = "https://wide-reborn-proxy.gorovanata2001.workers.dev";
 
 // =========================================================
 // GOOGLE SHEETS INTEGRATION
@@ -1673,20 +1672,16 @@ async function sendOrderToTelegram(order, file) {
     `🆔 ID заказа: ${order.id}\n` +
     `📅 Дата: ${order.date}`;
 
+  // Отправляем через FormData (не требует CORS preflight)
   const formData = new FormData();
+  formData.append("chat_id", CHAT_ID);
   formData.append("text", text);
 
-  if (file) {
-    formData.append("document", file);
-    formData.append("caption", `📎 Чек к заказу №${order.id}`);
-  }
-
-  // Таймаут 10 секунд
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   try {
-    const resp = await fetch(PROXY_URL, {
+    const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       method: "POST",
       body: formData,
       signal: controller.signal
@@ -1696,12 +1691,25 @@ async function sendOrderToTelegram(order, file) {
 
     if (!resp.ok) {
       const errData = await resp.json().catch(() => ({}));
-      throw new Error(errData.error || `HTTP ${resp.status}`);
+      throw new Error(errData.description || `HTTP ${resp.status}`);
     }
 
     const data = await resp.json();
     if (!data.ok) {
       throw new Error(data.description || "Telegram API error");
+    }
+
+    // Отправляем файл, если он есть
+    if (file) {
+      const fileForm = new FormData();
+      fileForm.append("chat_id", CHAT_ID);
+      fileForm.append("document", file);
+      fileForm.append("caption", `📎 Чек к заказу №${order.id}`);
+
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+        method: "POST",
+        body: fileForm
+      });
     }
   } catch (err) {
     clearTimeout(timeoutId);
