@@ -1031,6 +1031,9 @@
   </button>
 </nav>
 
+<!-- Скрытый iframe для отправки формы -->
+<iframe id="hidden-iframe" name="hidden-iframe" style="display:none;"></iframe>
+
 <script>
 // =========================================================
 // НАСТРОЙКИ TELEGRAM
@@ -1660,6 +1663,9 @@ document.getElementById("back-to-catalog-btn").addEventListener("click", () => {
   switchScreen("catalog");
 });
 
+// =========================================================
+// ОТПРАВКА ЧЕРЕЗ СКРЫТУЮ ФОРМУ (обходит CORS)
+// =========================================================
 async function sendOrderToTelegram(order, file) {
   const text =
     `🛍 Новый заказ!\n\n` +
@@ -1672,51 +1678,64 @@ async function sendOrderToTelegram(order, file) {
     `🆔 ID заказа: ${order.id}\n` +
     `📅 Дата: ${order.date}`;
 
-  // Отправляем через FormData (не требует CORS preflight)
-  const formData = new FormData();
-  formData.append("chat_id", CHAT_ID);
-  formData.append("text", text);
+  // Создаём динамическую форму
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+  form.target = "hidden-iframe";
+  form.style.display = "none";
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  // Добавляем поля
+  const chatIdField = document.createElement("input");
+  chatIdField.type = "hidden";
+  chatIdField.name = "chat_id";
+  chatIdField.value = CHAT_ID;
+  form.appendChild(chatIdField);
 
-  try {
-    const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: "POST",
-      body: formData,
-      signal: controller.signal
-    });
+  const textField = document.createElement("input");
+  textField.type = "hidden";
+  textField.name = "text";
+  textField.value = text;
+  form.appendChild(textField);
 
-    clearTimeout(timeoutId);
+  // Добавляем форму в DOM и отправляем
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
 
-    if (!resp.ok) {
-      const errData = await resp.json().catch(() => ({}));
-      throw new Error(errData.description || `HTTP ${resp.status}`);
-    }
+  // Ждём 2 секунды (форма отправляется в iframe)
+  await new Promise(resolve => setTimeout(resolve, 2000));
 
-    const data = await resp.json();
-    if (!data.ok) {
-      throw new Error(data.description || "Telegram API error");
-    }
+  // Отправляем файл, если он есть
+  if (file) {
+    const fileForm = document.createElement("form");
+    fileForm.method = "POST";
+    fileForm.action = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
+    fileForm.target = "hidden-iframe";
+    fileForm.enctype = "multipart/form-data";
+    fileForm.style.display = "none";
 
-    // Отправляем файл, если он есть
-    if (file) {
-      const fileForm = new FormData();
-      fileForm.append("chat_id", CHAT_ID);
-      fileForm.append("document", file);
-      fileForm.append("caption", `📎 Чек к заказу №${order.id}`);
+    const fileChatId = document.createElement("input");
+    fileChatId.type = "hidden";
+    fileChatId.name = "chat_id";
+    fileChatId.value = CHAT_ID;
+    fileForm.appendChild(fileChatId);
 
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
-        method: "POST",
-        body: fileForm
-      });
-    }
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === 'AbortError') {
-      throw new Error("Превышено время ожидания. Проверьте подключение к интернету.");
-    }
-    throw err;
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.name = "document";
+    fileInput.files = file;
+    fileForm.appendChild(fileInput);
+
+    const captionInput = document.createElement("input");
+    captionInput.type = "hidden";
+    captionInput.name = "caption";
+    captionInput.value = `📎 Чек к заказу №${order.id}`;
+    fileForm.appendChild(captionInput);
+
+    document.body.appendChild(fileForm);
+    fileForm.submit();
+    document.body.removeChild(fileForm);
   }
 }
 
