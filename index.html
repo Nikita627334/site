@@ -93,6 +93,12 @@
   }
   .logo-text span { color: var(--accent); }
   
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
   .refresh-btn {
     background: none;
     border: none;
@@ -106,6 +112,171 @@
   .refresh-btn svg { width: 20px; height: 20px; }
   .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ADMIN PANEL - Floating Button */
+  .admin-float-btn {
+    position: fixed;
+    bottom: calc(var(--nav-height) + var(--safe-bottom) + 20px);
+    right: 16px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(90, 0, 10, 0.3);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+    transition: transform 0.15s;
+  }
+  .admin-float-btn:active { transform: scale(0.9); }
+  .admin-float-btn.visible { display: flex; }
+  .admin-float-btn svg { width: 24px; height: 24px; }
+
+  /* ADMIN PANEL - Modal Styles */
+  .admin-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    animation: fadeIn .2s ease;
+  }
+  .admin-modal-overlay.active { display: flex; }
+  .admin-modal {
+    width: 100%;
+    max-width: 500px;
+    max-height: 95vh;
+    background: var(--bg);
+    border-radius: 20px 20px 0 0;
+    overflow-y: auto;
+    padding-bottom: calc(16px + var(--safe-bottom));
+    animation: slideUp .25s ease;
+  }
+  .admin-modal-header {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    z-index: 2;
+  }
+  .admin-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .admin-modal-body {
+    padding: 16px;
+  }
+  .admin-section {
+    margin-bottom: 20px;
+  }
+  .admin-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--surface);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .admin-product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .admin-product-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .admin-product-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--badge-bg);
+    flex-shrink: 0;
+  }
+  .admin-product-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .admin-product-name {
+    font-size: 14px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .admin-product-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .admin-delete-btn {
+    background: rgba(192, 57, 43, 0.1);
+    color: var(--danger);
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .admin-delete-btn:active { background: rgba(192, 57, 43, 0.2); }
+  .admin-delete-btn svg { width: 18px; height: 18px; }
+  .admin-empty {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .admin-badge-local {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(46, 125, 50, 0.1);
+    color: var(--success);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+  .admin-badge-sheet {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
 
   .controls {
     padding: 12px 16px 4px;
@@ -867,9 +1038,11 @@
     <img src="https://sun9-7.vkuserphoto.ru/s/v1/ig2/mzGo7cvc7exXuP8rmQYi3SJAJ5ZCxHY4T85F-kRL9xi0tN-Z0089HiQtFFEO4AINHBACWyRoJM2nM19ju3yJzvV7.jpg?as=32x32,48x48,72x72,108x108,160x160,240x240,360x360,480x480,540x540,640x640&cs=640x0&from=bu&quality=95" alt="Wide Reborn Logo" class="header-logo" />
     <div class="logo-text">Wide Reborn <span>Наличие</span></div>
   </div>
-  <button class="refresh-btn" id="refresh-btn" aria-label="Обновить" title="Обновить из таблицы">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
-  </button>
+  <div class="header-actions">
+    <button class="refresh-btn" id="refresh-btn" aria-label="Обновить" title="Обновить из таблицы">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+    </button>
+  </div>
 </header>
 
 <section id="screen-catalog" class="screen active">
@@ -1016,6 +1189,51 @@
   </div>
 </div>
 
+<!-- ADMIN PANEL - Modal -->
+<div id="admin-modal-overlay" class="admin-modal-overlay">
+  <div class="admin-modal">
+    <div class="admin-modal-header">
+      <div class="admin-modal-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Админ-панель
+      </div>
+      <button class="close-btn" id="admin-modal-close" aria-label="Закрыть">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="admin-modal-body">
+      <!-- Форма добавления товара -->
+      <div class="admin-section">
+        <div class="admin-section-title">➕ Добавить товар</div>
+        <form class="admin-form" id="admin-add-form">
+          <input type="text" class="form-input" id="admin-prod-name" placeholder="Название товара *" required />
+          <input type="text" class="form-input" id="admin-prod-category" placeholder="Категория *" required />
+          <input type="number" class="form-input" id="admin-prod-price" placeholder="Цена (₽) *" required min="0" />
+          <input type="text" class="form-input" id="admin-prod-sizes" placeholder="Размеры (через запятую: S,M,L,XL)" />
+          <input type="text" class="form-input" id="admin-prod-image" placeholder="Ссылка на изображение (URL)" />
+          <input type="text" class="form-input" id="admin-prod-desc" placeholder="Описание" />
+          <select class="form-input" id="admin-prod-status">
+            <option value="В наличии">В наличии</option>
+            <option value="Нет в наличии">Нет в наличии</option>
+          </select>
+          <button type="submit" class="btn-full">Добавить в каталог</button>
+        </form>
+      </div>
+
+      <!-- Список товаров -->
+      <div class="admin-section">
+        <div class="admin-section-title">📦 Управление товарами</div>
+        <div id="admin-product-list" class="admin-product-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL - Floating Button -->
+<button class="admin-float-btn" id="admin-float-btn" aria-label="Админ-панель">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+</button>
+
 <nav class="bottom-nav">
   <button class="nav-item active" data-screen="catalog">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -1061,6 +1279,12 @@ let currentOrder = null;
 let receiptFile = null;
 
 const state = { screen: "catalog", detailId: null, selectedSize: null, search: "", category: "all" };
+
+// =========================================================
+// ADMIN PANEL - SETTINGS
+// =========================================================
+const ADMIN_USER_ID = 1976578731; // Твой Telegram ID
+let currentUserId = null;
 
 // =========================================================
 // УТИЛИТЫ
@@ -1161,6 +1385,33 @@ function saveOrder(order) {
 }
 
 // =========================================================
+// ADMIN PANEL - LOCAL STORAGE FUNCTIONS
+// =========================================================
+function getAdminLocalProducts() {
+  try {
+    return JSON.parse(localStorage.getItem("admin_local_products") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveAdminLocalProducts(products) {
+  localStorage.setItem("admin_local_products", JSON.stringify(products));
+}
+
+function getAdminHiddenProducts() {
+  try {
+    return JSON.parse(localStorage.getItem("admin_hidden_products") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveAdminHiddenProducts(ids) {
+  localStorage.setItem("admin_hidden_products", JSON.stringify(ids));
+}
+
+// =========================================================
 // ЗАГРУЗКА ДАННЫХ
 // =========================================================
 async function loadProductsFromSheet() {
@@ -1212,7 +1463,7 @@ async function loadProductsFromSheet() {
         : randomColor(name);
 
       parsed.push({
-        id: i,
+        id: i, // ID из Google Sheets
         name,
         category: (r[idx.category] || "Без категории").trim(),
         price,
@@ -1220,20 +1471,32 @@ async function loadProductsFromSheet() {
         description,
         imageUrl: (r[idx.image] || "").trim(),
         status: (r[idx.status] || "В наличии").trim(),
-        color
+        color,
+        source: "sheet" // Помечаем источник
       });
     }
 
     if (parsed.length === 0) throw new Error("Не удалось распознать товары в таблице");
 
-    products = parsed;
+    // ADMIN PANEL: Фильтруем скрытые товары и добавляем локальные
+    const hiddenIds = getAdminHiddenProducts();
+    const sheetProducts = parsed.filter(p => !hiddenIds.includes(p.id));
+    const localProducts = getAdminLocalProducts();
+    
+    products = [...sheetProducts, ...localProducts];
     dataLoaded = true;
     fillCategories();
     renderCatalog();
   } catch (err) {
     console.error("Sheet load error:", err);
     dataError = err.message || "Ошибка загрузки";
-    products = FALLBACK_PRODUCTS.slice();
+    
+    // ADMIN PANEL: При ошибке тоже объединяем
+    const hiddenIds = getAdminHiddenProducts();
+    const fallbackFiltered = FALLBACK_PRODUCTS.filter(p => !hiddenIds.includes(p.id));
+    const localProducts = getAdminLocalProducts();
+    
+    products = [...fallbackFiltered.map(p => ({...p, source: "sheet"})), ...localProducts];
     dataLoaded = true;
     fillCategories();
     renderCatalog();
@@ -1681,20 +1944,15 @@ async function sendOrderToTelegram(order, file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     
-    // Telegram вернёт JSON, браузер не сможет его отобразить как изображение,
-    // но сам запрос дойдёт до сервера и сообщение будет отправлено
     img.onload = () => resolve();
     img.onerror = () => {
-      // onerror сработает, потому что Telegram возвращает JSON, а не изображение
-      // Но запрос уже дошёл до сервера!
       resolve();
     };
     
     img.src = url;
     
-    // Таймаут 5 секунд
     setTimeout(() => {
-      resolve(); // Считаем успешным, так как запрос дошёл
+      resolve();
     }, 5000);
   });
 }
@@ -1749,6 +2007,175 @@ document.getElementById("refresh-btn").addEventListener("click", async () => {
   }
 });
 
+// =========================================================
+// ADMIN PANEL - LOGIC
+// =========================================================
+function isAdmin() {
+  return currentUserId === ADMIN_USER_ID;
+}
+
+function showAdminButton() {
+  const btn = document.getElementById("admin-float-btn");
+  if (isAdmin()) {
+    btn.classList.add("visible");
+  } else {
+    btn.classList.remove("visible");
+  }
+}
+
+function openAdminModal() {
+  document.getElementById("admin-modal-overlay").classList.add("active");
+  renderAdminProductList();
+}
+
+function closeAdminModal() {
+  document.getElementById("admin-modal-overlay").classList.remove("active");
+}
+
+function renderAdminProductList() {
+  const list = document.getElementById("admin-product-list");
+  
+  if (products.length === 0) {
+    list.innerHTML = '<div class="admin-empty">Товаров пока нет</div>';
+    return;
+  }
+
+  const html = products.map(p => {
+    const isLocal = p.source === "local";
+    const badge = isLocal 
+      ? '<span class="admin-badge-local">ЛОКАЛЬНЫЙ</span>' 
+      : '<span class="admin-badge-sheet">ИЗ ТАБЛИЦЫ</span>';
+    
+    return `
+      <div class="admin-product-item">
+        <img src="${p.imageUrl || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23ddd%22/></svg>'}" 
+             alt="${escapeHtml(p.name)}" 
+             class="admin-product-img"
+             onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22${encodeURIComponent(p.color || '#e5e5e5')}%22/></svg>'" />
+        <div class="admin-product-info">
+          <div class="admin-product-name">${escapeHtml(p.name)} ${badge}</div>
+          <div class="admin-product-meta">${formatPrice(p.price)} · ${p.category}</div>
+        </div>
+        <button class="admin-delete-btn" data-id="${p.id}" data-source="${p.source || 'sheet'}" aria-label="Удалить">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+    `;
+  }).join("");
+
+  list.innerHTML = html;
+
+  // Навешиваем обработчики удаления
+  list.querySelectorAll(".admin-delete-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = parseInt(btn.dataset.id);
+      const source = btn.dataset.source;
+      deleteProduct(id, source);
+    });
+  });
+}
+
+function addLocalProduct(product) {
+  const localProducts = getAdminLocalProducts();
+  
+  // Генерируем уникальный ID для локальных товаров (используем timestamp с приставкой)
+  const newId = Date.now();
+  
+  const newProduct = {
+    ...product,
+    id: newId,
+    source: "local"
+  };
+
+  localProducts.push(newProduct);
+  saveAdminLocalProducts(localProducts);
+  
+  // Перезагружаем каталог
+  loadProductsFromSheet();
+}
+
+function deleteProduct(id, source) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
+  if (!confirm(`Удалить товар "${product.name}"?`)) return;
+
+  if (source === "local") {
+    // Удаляем из локального хранилища
+    const localProducts = getAdminLocalProducts();
+    const updated = localProducts.filter(p => p.id !== id);
+    saveAdminLocalProducts(updated);
+  } else {
+    // Помечаем как скрытый (из Google Sheets)
+    const hiddenIds = getAdminHiddenProducts();
+    if (!hiddenIds.includes(id)) {
+      hiddenIds.push(id);
+      saveAdminHiddenProducts(hiddenIds);
+    }
+  }
+
+  // Перезагружаем каталог и список в админке
+  loadProductsFromSheet();
+  renderAdminProductList();
+  
+  // Вибрация для тактильного отклика
+  try {
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+    }
+  } catch (e) {}
+}
+
+// Обработчик формы добавления товара
+document.getElementById("admin-add-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  
+  const name = document.getElementById("admin-prod-name").value.trim();
+  const category = document.getElementById("admin-prod-category").value.trim();
+  const price = parseInt(document.getElementById("admin-prod-price").value, 10);
+  const sizesRaw = document.getElementById("admin-prod-sizes").value.trim();
+  const imageUrl = document.getElementById("admin-prod-image").value.trim();
+  const description = document.getElementById("admin-prod-desc").value.trim();
+  const status = document.getElementById("admin-prod-status").value;
+
+  const sizes = sizesRaw 
+    ? sizesRaw.split(/[,\s]+/).map(s => s.trim()).filter(Boolean)
+    : ["—"];
+
+  addLocalProduct({
+    name,
+    category,
+    price,
+    sizes,
+    description,
+    imageUrl,
+    status,
+    color: randomColor(name)
+  });
+
+  // Очищаем форму
+  e.target.reset();
+  
+  // Уведомление об успехе
+  try {
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+    }
+  } catch (e) {}
+  
+  alert("✅ Товар добавлен в каталог!");
+});
+
+// Обработчики открытия/закрытия админ-модалки
+document.getElementById("admin-float-btn").addEventListener("click", openAdminModal);
+document.getElementById("admin-modal-close").addEventListener("click", closeAdminModal);
+document.getElementById("admin-modal-overlay").addEventListener("click", (e) => {
+  if (e.target.id === "admin-modal-overlay") closeAdminModal();
+});
+
+// =========================================================
+// TELEGRAM WEB APP INIT
+// =========================================================
 (function initTG() {
   try {
     const tg = window.Telegram && window.Telegram.WebApp;
@@ -1756,6 +2183,10 @@ document.getElementById("refresh-btn").addEventListener("click", async () => {
     tg.ready();
     tg.expand();
     tg.enableVerticalSwipes && tg.enableVerticalSwipes();
+
+    // ADMIN PANEL: Получаем ID текущего пользователя
+    currentUserId = tg.initDataUnsafe?.user?.id || null;
+    showAdminButton();
 
     const root = document.documentElement;
     if (tg.backgroundColor) root.style.setProperty("--bg", tg.backgroundColor);
