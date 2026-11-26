@@ -1720,25 +1720,28 @@ document.getElementById("back-to-catalog-btn").addEventListener("click", () => {
 });
 
 // =========================================================
-// ОТПРАВКА ЗАКАЗА ЧЕРЕЗ GOOGLE APPS SCRIPT (Безопасно и надежно)
+// ОТПРАВКА ЗАКАЗА ЧЕРЕЗ GOOGLE APPS SCRIPT (ИСПРАВЛЕННАЯ ВЕРСИЯ)
 // =========================================================
 async function sendOrderToTelegram(order) {
   if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("ВСТАВЬ_СЮДА")) {
     throw new Error("Не настроен URL веб-приложения Google Apps Script");
   }
 
+  // Убрали заголовок "Content-Type": "application/json", чтобы избежать ошибок CORS 
+  // и парсинга ("The string did not match the expected pattern") в Google Apps Script
   const response = await fetch(GAS_WEB_APP_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
     body: JSON.stringify(order)
   });
+
+  if (!response.ok) {
+    throw new Error("Сетевая ошибка при отправке: " + response.status);
+  }
 
   const result = await response.json();
   
   if (result.result !== "success") {
-    throw new Error(result.message || "Ошибка при обработке заказа на сервере");
+    throw new Error(result.message || "Неизвестная ошибка на сервере Google");
   }
 }
 
