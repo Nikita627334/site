@@ -863,17 +863,14 @@
   }
   .btn-delete:active { background: var(--danger); color: #fff; }
   .admin-warning {
-    background: rgba(255, 193, 7, 0.15);
-    border: 1px solid #ffc107;
-    color: #856404;
+    background: rgba(46, 125, 50, 0.1);
+    border: 1px solid var(--success);
+    color: var(--success);
     padding: 10px;
     border-radius: 8px;
     font-size: 12px;
     margin-bottom: 16px;
     line-height: 1.4;
-  }
-  @media (prefers-color-scheme: dark) {
-    .admin-warning { color: #ffda6a; border-color: #b38600; background: rgba(255, 193, 7, 0.1); }
   }
 
   ::-webkit-scrollbar { width: 0; height: 0; }
@@ -1036,7 +1033,7 @@
     </div>
     <div class="modal-body">
       <div class="admin-warning">
-        ⚠️ <b>Внимание:</b> Изменения сохраняются локально на этом устройстве. Чтобы все пользователи видели изменения, необходимо подключить бэкенд или Google Apps Script.
+        ✅ Изменения сохраняются напрямую в Google Таблицу и видны всем пользователям!
       </div>
       
       <form id="admin-add-form" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
@@ -1045,17 +1042,17 @@
           <input type="number" id="admin-prod-price" class="form-input" placeholder="Цена (₽) *" required style="flex: 1;" />
           <input type="text" id="admin-prod-category" class="form-input" placeholder="Категория *" required style="flex: 1;" />
         </div>
-        <input type="text" id="admin-prod-sizes" class="form-input" placeholder="Размеры (через запятую, например: S, M, L)" />
+        <input type="text" id="admin-prod-sizes" class="form-input" placeholder="Размеры (через запятую: S, M, L)" />
         <input type="text" id="admin-prod-image" class="form-input" placeholder="Ссылка на изображение (URL)" />
         <select id="admin-prod-status" class="form-input">
           <option value="В наличии">В наличии</option>
           <option value="Нет в наличии">Нет в наличии</option>
         </select>
         <textarea id="admin-prod-desc" class="form-input" placeholder="Описание" rows="2" style="resize: vertical;"></textarea>
-        <button type="submit" class="btn-full" style="background: var(--success);">➕ Добавить товар</button>
+        <button type="submit" class="btn-full" style="background: var(--success);">➕ Добавить товар в таблицу</button>
       </form>
 
-      <h3 style="font-size: 15px; margin-bottom: 8px;">Текущие товары (для удаления):</h3>
+      <h3 style="font-size: 15px; margin-bottom: 8px;">Текущие товары (для скрытия):</h3>
       <div id="admin-product-list" class="admin-product-list">
         <!-- Список генерируется JS -->
       </div>
@@ -1084,25 +1081,15 @@
 // =========================================================
 const BOT_TOKEN = "9068439528:AAGqRw0IV6Y4NKOWLldtEJ-EVSl3Co0JVFg";
 const CHAT_ID = "1976578731";
-const ADMIN_ID = 1976578731; // Твой ID для доступа к админке
-
-// ✅ ОБНОВЛЕННАЯ ССЫЛКА НА GOOGLE APPS SCRIPT
+const ADMIN_ID = 1976578731;
 const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx7EPMtSMYgyj7JPmd1TNrN-FgXb-Bib8rPTXc5nlE61_DxRazFLuBlRMU2L38yg9cs/exec";
-
-// =========================================================
-// GOOGLE SHEETS INTEGRATION
-// =========================================================
 const SHEET_ID = "1CY02J2MxGznAeQzWlZhBIQCl_ZSGoCtfxK43ltlIQw4";
 const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
 const DELIVERY = 400;
 
 const FALLBACK_PRODUCTS = [
   { id: 1, name: "Кроссовки Urban Runner", category: "Обувь", price: 8900, sizes: ["39","40","41","42","43","44"], description: "Легкие кроссовки для города.", imageUrl: "", status: "В наличии", color: "#c9a88a" },
-  { id: 2, name: "Куртка Winter Parka", category: "Куртки", price: 14500, sizes: ["S","M","L","XL"], description: "Теплая зимняя куртка.", imageUrl: "", status: "В наличии", color: "#2c3e50" },
-  { id: 3, name: "Футболка Basic White", category: "Футболки", price: 2400, sizes: ["XS","S","M","L","XL"], description: "Базовая футболка из 100% хлопка.", imageUrl: "", status: "В наличии", color: "#e8e8e8" },
-  { id: 4, name: "Ботинки Chelsea Black", category: "Обувь", price: 11200, sizes: ["40","41","42","43","44"], description: "Классические челси из натуральной кожи.", imageUrl: "", status: "Нет в наличии", color: "#1a1a1a" },
-  { id: 5, name: "Куртка Bomber Olive", category: "Куртки", price: 9800, sizes: ["S","M","L","XL"], description: "Стильный бомбер в оливковом цвете.", imageUrl: "", status: "В наличии", color: "#556b2f" },
-  { id: 6, name: "Футболка Oversize Black", category: "Футболки", price: 3200, sizes: ["M","L","XL","XXL"], description: "Оверсайз футболка премиум-качества.", imageUrl: "", status: "В наличии", color: "#2b2b2b" }
+  { id: 2, name: "Куртка Winter Parka", category: "Куртки", price: 14500, sizes: ["S","M","L","XL"], description: "Теплая зимняя куртка.", imageUrl: "", status: "В наличии", color: "#2c3e50" }
 ];
 
 let products = [];
@@ -1170,7 +1157,7 @@ function escapeHtml(s) {
 }
 
 // =========================================================
-// LOCAL STORAGE (Favorites, Orders, Admin Data)
+// LOCAL STORAGE
 // =========================================================
 function getFavorites() {
   try { return JSON.parse(localStorage.getItem("favorites") || "[]"); }
@@ -1204,33 +1191,8 @@ function saveOrder(order) {
   localStorage.setItem("orders", JSON.stringify(orders));
 }
 
-// --- Функции для Админ-панели (Локальное управление) ---
-function getAdminCustomProducts() {
-  try { return JSON.parse(localStorage.getItem("admin_custom_products") || "[]"); }
-  catch { return []; }
-}
-
-function saveAdminCustomProduct(product) {
-  const custom = getAdminCustomProducts();
-  custom.push(product);
-  localStorage.setItem("admin_custom_products", JSON.stringify(custom));
-}
-
-function getAdminDeletedIds() {
-  try { return JSON.parse(localStorage.getItem("admin_deleted_ids") || "[]"); }
-  catch { return []; }
-}
-
-function addAdminDeletedId(id) {
-  const deleted = getAdminDeletedIds();
-  if (!deleted.includes(id)) {
-    deleted.push(id);
-    localStorage.setItem("admin_deleted_ids", JSON.stringify(deleted));
-  }
-}
-
 // =========================================================
-// ЗАГРУЗКА ДАННЫХ
+// ЗАГРУЗКА ДАННЫХ ИЗ GOOGLE SHEETS
 // =========================================================
 async function loadProductsFromSheet() {
   dataError = null;
@@ -1243,11 +1205,11 @@ async function loadProductsFromSheet() {
     const text = await resp.text();
 
     if (text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")) {
-      throw new Error("Таблица не опубликована. Откройте Google Sheets → Файл → Поделиться → Опубликовать в интернете.");
+      throw new Error("Таблица не опубликована.");
     }
 
     const rows = parseCSV(text);
-    if (rows.length < 2) throw new Error("Таблица пуста или содержит только заголовки");
+    if (rows.length < 2) throw new Error("Таблица пуста");
 
     const headers = rows[0].map(normalizeHeader);
     const idx = {
@@ -1265,7 +1227,9 @@ async function loadProductsFromSheet() {
     for (let i = 1; i < rows.length; i++) {
       const r = rows[i];
       const name = (r[idx.name] || "").trim();
-      if (!name) continue;
+      
+      // 🔥 ИГНОРИРУЕМ УДАЛЕННЫЕ ТОВАРЫ
+      if (!name || name.toUpperCase().includes("УДАЛЕНО")) continue;
 
       const priceRaw = (r[idx.price] || "0").toString().replace(/\s+/g, "").replace(",", ".");
       const price = parseInt(priceRaw, 10) || 0;
@@ -1294,11 +1258,10 @@ async function loadProductsFromSheet() {
       });
     }
 
-    if (parsed.length === 0) throw new Error("Не удалось распознать товары в таблице");
+    if (parsed.length === 0) throw new Error("Не удалось распознать товары");
 
     products = parsed;
     dataLoaded = true;
-    applyAdminModifications();
     fillCategories();
     renderCatalog();
   } catch (err) {
@@ -1306,18 +1269,9 @@ async function loadProductsFromSheet() {
     dataError = err.message || "Ошибка загрузки";
     products = FALLBACK_PRODUCTS.slice().map(p => ({...p, source: "fallback"}));
     dataLoaded = true;
-    applyAdminModifications();
     fillCategories();
     renderCatalog();
   }
-}
-
-function applyAdminModifications() {
-  const deletedIds = getAdminDeletedIds();
-  const customProducts = getAdminCustomProducts();
-  
-  products = products.filter(p => !deletedIds.includes(p.id));
-  products = [...products, ...customProducts];
 }
 
 function randomColor(seed) {
@@ -1413,7 +1367,6 @@ function renderCatalog() {
       <div style="grid-column: 1/-1;">
         <div class="error-box">
           <div>⚠️ ${escapeHtml(dataError)}</div>
-          <div style="margin-top:6px;font-size:12px;opacity:0.8;">Показаны локальные данные</div>
           <button onclick="loadProductsFromSheet()">Повторить</button>
         </div>
       </div>`;
@@ -1516,10 +1469,6 @@ function renderOrders() {
       </div>
     `).join("")}
   </div>`;
-
-  list.querySelectorAll(".btn-link").forEach(b => {
-    b.addEventListener("click", () => alert("Детали заказа будут доступны в следующей версии"));
-  });
 }
 
 function openDetail(id) {
@@ -1720,15 +1669,9 @@ document.getElementById("back-to-catalog-btn").addEventListener("click", () => {
 });
 
 // =========================================================
-// ОТПРАВКА ЗАКАЗА ЧЕРЕЗ GOOGLE APPS SCRIPT (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+// ОТПРАВКА ЗАКАЗА ЧЕРЕЗ GOOGLE APPS SCRIPT
 // =========================================================
 async function sendOrderToTelegram(order) {
-  if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("ВСТАВЬ_СЮДА")) {
-    throw new Error("Не настроен URL веб-приложения Google Apps Script");
-  }
-
-  // Убрали заголовок "Content-Type": "application/json", чтобы избежать ошибок CORS 
-  // и парсинга ("The string did not match the expected pattern") в Google Apps Script
   const response = await fetch(GAS_WEB_APP_URL, {
     method: "POST",
     body: JSON.stringify(order)
@@ -1796,7 +1739,7 @@ document.getElementById("refresh-btn").addEventListener("click", async () => {
 });
 
 // =========================================================
-// ЛОГИКА АДМИН-ПАНЕЛИ
+// 🔥 ЛОГИКА АДМИН-ПАНЕЛИ (ПРЯМОЕ ВЗАИМОДЕЙСТВИЕ С GOOGLE SHEETS)
 // =========================================================
 const adminBtn = document.getElementById("admin-btn");
 const adminModalOverlay = document.getElementById("admin-modal-overlay");
@@ -1843,81 +1786,85 @@ function renderAdminProductList() {
     const item = document.createElement("div");
     item.className = "admin-product-item";
     
-    const isCustom = p.source === "custom";
-    const deleteBtnText = isCustom ? "Удалить" : "Скрыть";
-    
     item.innerHTML = `
       <div class="admin-product-info">
         <div class="admin-product-name">${escapeHtml(p.name)}</div>
         <div class="admin-product-price">${formatPrice(p.price)} · ${escapeHtml(p.category)}</div>
       </div>
-      <button class="btn-delete" data-id="${p.id}" data-source="${p.source || 'sheet'}">${deleteBtnText}</button>
+      <button class="btn-delete" data-id="${p.id}">Скрыть</button>
     `;
     adminProductList.appendChild(item);
   });
 
   adminProductList.querySelectorAll(".btn-delete").forEach(btn => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("Скрыть этот товар из каталога?")) return;
       const id = btn.dataset.id;
-      const source = btn.dataset.source;
+      btn.disabled = true;
+      btn.textContent = "...";
       
-      if (source === "custom") {
-        let custom = getAdminCustomProducts();
-        custom = custom.filter(c => c.id != id);
-        localStorage.setItem("admin_custom_products", JSON.stringify(custom));
-      } else {
-        addAdminDeletedId(Number(id));
-      }
-      
-      loadProductsFromSheet();
-      renderAdminProductList();
-      
-      if (window.Telegram?.WebApp?.HapticFeedback) {
-        window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+      try {
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "delete_product", id: parseInt(id) })
+        });
+        const result = await response.json();
+        
+        if (result.result === "success") {
+          loadProductsFromSheet();
+          renderAdminProductList();
+        } else {
+          alert("Ошибка: " + result.message);
+        }
+      } catch (err) {
+        alert("Ошибка сети: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Скрыть";
       }
     });
   });
 }
 
-adminAddForm.addEventListener("submit", (e) => {
+adminAddForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const btn = adminAddForm.querySelector("button[type='submit']");
+  btn.disabled = true;
+  btn.textContent = "Добавление...";
   
-  const name = document.getElementById("admin-prod-name").value.trim();
-  const price = parseInt(document.getElementById("admin-prod-price").value) || 0;
-  const category = document.getElementById("admin-prod-category").value.trim();
-  const sizesRaw = document.getElementById("admin-prod-sizes").value.trim();
-  const imageUrl = document.getElementById("admin-prod-image").value.trim();
-  const status = document.getElementById("admin-prod-status").value;
-  const description = document.getElementById("admin-prod-desc").value.trim();
-
-  const sizes = sizesRaw ? sizesRaw.split(",").map(s => s.trim()).filter(Boolean) : ["—"];
-  
-  const newProduct = {
-    id: "custom_" + Date.now(),
-    name,
-    category,
-    price,
-    sizes,
-    imageUrl,
-    status,
-    description,
-    color: randomColor(name),
-    source: "custom"
+  const payload = {
+    action: "add_product",
+    name: document.getElementById("admin-prod-name").value.trim(),
+    category: document.getElementById("admin-prod-category").value.trim(),
+    price: parseInt(document.getElementById("admin-prod-price").value) || 0,
+    sizes: document.getElementById("admin-prod-sizes").value.trim(),
+    imageUrl: document.getElementById("admin-prod-image").value.trim(),
+    status: document.getElementById("admin-prod-status").value,
+    description: document.getElementById("admin-prod-desc").value.trim(),
+    color: randomColor(document.getElementById("admin-prod-name").value.trim())
   };
 
-  saveAdminCustomProduct(newProduct);
-  
-  adminAddForm.reset();
-  
-  loadProductsFromSheet();
-  renderAdminProductList();
-  fillCategories();
-  
-  if (window.Telegram?.WebApp?.HapticFeedback) {
-    window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    
+    if (result.result === "success") {
+      alert("✅ Товар успешно добавлен в таблицу!");
+      adminAddForm.reset();
+      loadProductsFromSheet();
+      renderAdminProductList();
+    } else {
+      alert("Ошибка: " + result.message);
+    }
+  } catch (err) {
+    alert("Ошибка сети: " + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "➕ Добавить товар в таблицу";
   }
-  
-  alert("✅ Товар успешно добавлен! (Локально)");
 });
 
 // =========================================================
